@@ -52,7 +52,7 @@ const readAndDownloadFirstSave = (file) => {
             ]);
         })
         .then(([headerData, partyData]) => {
-            const parsedHeader = Object.assign({}, JSON.parse(headerData), { name: "Temp Respec" });
+            const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Temp Respec" });
             const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Recreate", true);
 
             reader.file('header.json', JSON.stringify(parsedHeader));
@@ -86,7 +86,7 @@ const readAndDownloadSecondSave = (file) => {
             const preParsedParty = JSON.parse(partyData);
             const totalExperience = preParsedParty.m_EntityData[0].Descriptor.Progression.Experience;
 
-            const parsedHeader = Object.assign({}, JSON.parse(headerData), { name: "Respec" });
+            const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Respec" });
             const parsedParty = recursiveFindKeyAndReplaceValue(preParsedParty, "Experience", totalExperience);
 
             reader.file('header.json', JSON.stringify(parsedHeader));
