@@ -2,9 +2,6 @@ import JSZip from "jszip/dist/jszip.min";
 import saveAs from "file-saver";
 import "./styles.css";
 
-// We need to keep a global track of this since the experience goes away after respec
-let totalExperience;
-
 window.onload = () => {
     let firstFile, secondFile;
 
@@ -58,7 +55,8 @@ const readAndDownloadFirstSave = (file) => {
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Temp Respec" });
             const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Recreate", true);
 
-            totalExperience = parsedParty.m_EntityData[0].Descriptor.Progression.Experience;
+            const totalExperienceInput = document.querySelectorAll(".total-experience-input")[0];
+            totalExperienceInput.value = parsedParty.m_EntityData[0].Descriptor.Progression.Experience;
 
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
@@ -88,8 +86,10 @@ const readAndDownloadSecondSave = (file) => {
             ]);
         })
         .then(([headerData, partyData]) => {
+            const totalExperienceInput = document.querySelectorAll(".total-experience-input")[0];
+
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Respec" });
-            const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Experience", totalExperience);
+            const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Experience", totalExperienceInput.value);
 
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
