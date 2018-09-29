@@ -55,8 +55,6 @@ const readAndDownloadFirstSave = (file) => {
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { name: "Temp Respec" });
             const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Recreate", true);
 
-
-
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
 
@@ -86,7 +84,6 @@ const readAndDownloadSecondSave = (file) => {
         })
         .then(([headerData, partyData]) => {
             const preParsedParty = JSON.parse(partyData);
-            console.warn(preParsedParty);
             const totalExperience = preParsedParty.m_EntityData[0].Descriptor.Progression.Experience;
 
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { name: "Respec" });
@@ -121,10 +118,38 @@ const recursiveFindKeyAndReplaceValue = (rootObject, key, value) => {
         }
 
         const objectValue = rootObject[objectKey];
+
+        if (Array.isArray(objectValue)) {
+            clonedRootObject[objectKey] = recursiveArrayFindKeyAndReplaceValue(objectValue, key, value);
+            return;
+        }
+
         if (typeof objectValue === "object" && objectValue !== null) {
             clonedRootObject[objectKey] = recursiveFindKeyAndReplaceValue(objectValue, key, value);
         }
     });
 
     return clonedRootObject;
+};
+
+/**
+ * Recursively goes through an array and finds all matches of a given key, replacing it with the passed value.
+ *
+ * @param {Array} rootArray
+ * @param {String} key
+ * @param {*} value
+ * @returns {Array}
+ */
+const recursiveArrayFindKeyAndReplaceValue = (rootArray, key, value) => {
+    return rootArray.map((objectValue) => {
+        if (Array.isArray(objectValue)) {
+            return recursiveArrayFindKeyAndReplaceValue(objectValue, key, value);
+        }
+
+        if (typeof objectValue === "object" && objectValue !== null) {
+            return recursiveFindKeyAndReplaceValue(objectValue, key, value);
+        }
+
+        return objectValue;
+    });
 };
