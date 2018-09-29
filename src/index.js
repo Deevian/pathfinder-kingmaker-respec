@@ -2,6 +2,9 @@ import JSZip from "jszip/dist/jszip.min";
 import saveAs from "file-saver";
 import "./styles.css";
 
+// Saving alignment history from the first to the second save
+let alignment;
+
 window.onload = () => {
     let firstFile, secondFile;
 
@@ -58,6 +61,8 @@ const readAndDownloadFirstSave = (file) => {
             const totalExperienceInput = document.querySelectorAll(".total-experience-input")[0];
             totalExperienceInput.value = parsedParty.m_EntityData[0].Descriptor.Progression.Experience;
 
+            alignment = parsedParty.m_EntityData[0].Descriptor.Alignment;
+
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
 
@@ -90,6 +95,9 @@ const readAndDownloadSecondSave = (file) => {
 
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Respec" });
             const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Experience", totalExperienceInput.value);
+            const currentDescriptor = parsedParty.m_EntityData[0].Descriptor;
+
+            currentDescriptor.Alignment = getAlignmentWithBumpedIds(alignment, currentDescriptor["$id"]);
 
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
@@ -99,6 +107,29 @@ const readAndDownloadSecondSave = (file) => {
         .then((blob) => {
             saveAs(blob, "Respec.zks");
         });
+};
+
+/**
+ * Returns the passed alignment object with its ids bumped to avoid collision.
+ *
+ * @param {Object} alignment
+ * @param {String} currentDescriptorId
+ * @returns {Object}
+ */
+const getAlignmentWithBumpedIds = (alignment, currentDescriptorId) => {
+    const bumpByNumber = 1000000000;
+    const clonedAlignment = Object.assign({}, alignment);
+
+    clonedAlignment["$id"] = clonedAlignment["$id"] + bumpByNumber;
+    clonedAlignment.m_Owner["$ref"] = currentDescriptorId;
+
+    clonedAlignment.m_History = clonedAlignment.m_History.map((event) => {
+        return Object.assign({}, event, {
+            "$id": event["$id"] + bumpByNumber
+        });
+    });
+
+    return clonedAlignment;
 };
 
 /**
