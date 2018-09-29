@@ -34,3 +34,9 @@
     text-decoration: underline;
     color: #000;
 }
+
+.github-logo {
+    margin-left: 0.35rem;
+    width: 2.25rem;
+    height: 2.25rem;
+}
