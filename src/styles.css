@@ -1,0 +1,36 @@
+.container {
+    margin: 2rem;
+    color: #111;
+}
+
+.title {
+    text-decoration: underline;
+}
+
+.description {
+    margin-top: 2rem;
+    max-width: 55rem;
+}
+
+.file-input {
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+}
+
+.file-path {
+    font-family: monospace;
+    padding: 1rem;
+
+    background-color: #222;
+    color: #FFF;
+}
+
+.file-download {
+    font-weight: bold;
+    color: #111;
+}
+
+.first-download:hover {
+    text-decoration: underline;
+    color: #000;
+}

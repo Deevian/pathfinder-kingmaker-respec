@@ -1,0 +1,29 @@
+{
+  "name": "pathfinder-kingmaker-respec-tool",
+  "description": "Small tool to give players the ability to respec on the cRPG Pathfinder Kingmaker",
+  "version": "1.0.0",
+  "author": {
+    "name": "João Abreu",
+    "email": "me@deev.io",
+    "url": "https://deev.io"
+  },
+  "license": "WTFPL",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "rollup": "^0.66.2",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-postcss": "^1.6.2",
+    "rollup-plugin-terser": "^3.0.0"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.0-rc.3",
+    "jszip": "^3.1.5"
+  }
+}
