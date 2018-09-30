@@ -113,8 +113,13 @@ const readAndDownloadSecondSave = (file) => {
  * @returns {*}
  */
 const updateCharacterDataMap = (newCharacterDataMap, oldCharacterDataMap) => {
+    const bumpByNumber = 1000000000;
+
     _.forEach(newCharacterDataMap, ({ character, descriptor }, key) => {
-        const bumpByNumber = 1000000000;
+        if (!oldCharacterDataMap[key]) {
+            return;
+        }
+
         const oldDescriptor = oldCharacterDataMap[key].descriptor;
 
         descriptor.Progression.Experience = oldDescriptor.Progression.Experience;
