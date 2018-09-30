@@ -1,6 +1,6 @@
 import babel from "rollup-plugin-babel";
 import resolve from "rollup-plugin-node-resolve";
-import { terser } from "rollup-plugin-terser";
+import uglify from 'rollup-plugin-uglify-es';
 import commonjs from "rollup-plugin-commonjs";
 import postcss from "rollup-plugin-postcss";
 
@@ -25,6 +25,6 @@ export default {
             exclude: "node_modules/**",
         }),
         commonjs(),
-        terser(),
+        uglify(),
     ],
 };

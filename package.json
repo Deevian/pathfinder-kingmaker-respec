@@ -20,7 +20,7 @@
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-postcss": "^1.6.2",
-    "rollup-plugin-terser": "^3.0.0"
+    "rollup-plugin-uglify-es": "0.0.1"
   },
   "dependencies": {
     "file-saver": "^2.0.0-rc.3",
