@@ -1,9 +1,10 @@
 import JSZip from "jszip/dist/jszip.min";
 import saveAs from "file-saver";
+import _ from "lodash";
 import "./styles.css";
 
-// Saving alignment history from the first to the second save
-let alignment;
+// We save the character map from the first save to transfer stuff over to the second
+let characterDataMap;
 
 window.onload = () => {
     let firstFile, secondFile;
@@ -39,7 +40,7 @@ window.onload = () => {
 
 /**
  * Reads and downloads the first modified save with the `Recreate` prop as true on all characters
- * This is then returned back to the user as `Respec.zks`.
+ * This is then returned back to the user as `Temp_Respec.zks`.
  *
  * @param {Blob} file
  * @returns {PromiseLike<*[] | never>}
@@ -56,12 +57,10 @@ const readAndDownloadFirstSave = (file) => {
         })
         .then(([headerData, partyData]) => {
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Temp Respec" });
-            const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Recreate", true);
+            const parsedParty = JSON.parse(partyData);
 
-            const totalExperienceInput = document.querySelectorAll(".total-experience-input")[0];
-            totalExperienceInput.value = parsedParty.m_EntityData[0].Descriptor.Progression.Experience;
-
-            alignment = parsedParty.m_EntityData[0].Descriptor.Alignment;
+            characterDataMap = getCharacterDataMap(parsedParty);
+            _.forEach(characterDataMap, ({ character, descriptor }) => descriptor.Recreate = true);
 
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
@@ -74,8 +73,8 @@ const readAndDownloadFirstSave = (file) => {
 };
 
 /**
- * Reads and downloads the second modified save with the correct experience on all characters.
- * This is then returned back to the user as `Temp_Respec.zks`.
+ * Reads and downloads the second modified save with the correct experience and alignment on all characters.
+ * This is then returned back to the user as `Respec.zks`.
  *
  * @param {Blob} file
  * @returns {PromiseLike<*[] | never>}
@@ -91,13 +90,10 @@ const readAndDownloadSecondSave = (file) => {
             ]);
         })
         .then(([headerData, partyData]) => {
-            const totalExperienceInput = document.querySelectorAll(".total-experience-input")[0];
-
             const parsedHeader = Object.assign({}, JSON.parse(headerData), { Name: "Respec" });
-            const parsedParty = recursiveFindKeyAndReplaceValue(JSON.parse(partyData), "Experience", totalExperienceInput.value);
-            const currentDescriptor = parsedParty.m_EntityData[0].Descriptor;
+            const parsedParty = JSON.parse(partyData);
 
-            currentDescriptor.Alignment = getAlignmentWithBumpedIds(alignment, currentDescriptor["$id"]);
+            updateCharacterDataMap(getCharacterDataMap(parsedParty), characterDataMap);
 
             reader.file('header.json', JSON.stringify(parsedHeader));
             reader.file('party.json', JSON.stringify(parsedParty));
@@ -110,79 +106,78 @@ const readAndDownloadSecondSave = (file) => {
 };
 
 /**
- * Returns the passed alignment object with its ids bumped to avoid collision.
+ * Updates a given characterDataMap based upon an old version of the same structure.
  *
- * @param {Object} alignment
- * @param {String} currentDescriptorId
- * @returns {Object}
+ * @param {Object} newCharacterDataMap
+ * @param {Object} oldCharacterDataMap
+ * @returns {*}
  */
-const getAlignmentWithBumpedIds = (alignment, currentDescriptorId) => {
-    const bumpByNumber = 1000000000;
-    const clonedAlignment = Object.assign({}, alignment);
+const updateCharacterDataMap = (newCharacterDataMap, oldCharacterDataMap) => {
+    _.forEach(newCharacterDataMap, ({ character, descriptor }, key) => {
+        const bumpByNumber = 1000000000;
+        const oldDescriptor = oldCharacterDataMap[key].descriptor;
 
-    clonedAlignment["$id"] = clonedAlignment["$id"] + bumpByNumber;
-    clonedAlignment.m_Owner["$ref"] = currentDescriptorId;
+        descriptor.Progression.Experience = oldDescriptor.Progression.Experience;
 
-    clonedAlignment.m_History = clonedAlignment.m_History.map((event) => {
-        return Object.assign({}, event, {
-            "$id": event["$id"] + bumpByNumber
+        descriptor.Alignment.Vector = Object.assign({}, oldDescriptor.Alignment.Vector);
+        descriptor.Alignment.m_History = _.map(oldDescriptor.Alignment.m_History, (event) => {
+            return Object.assign({}, event, { "$id": event["$id"] + bumpByNumber });
         });
     });
 
-    return clonedAlignment;
+    return newCharacterDataMap;
 };
 
 /**
- * Recursively goes through an object and finds all matches of a given key, replacing it with the passed value.
- *
- * @param {Object} rootObject
- * @param {String} key
- * @param {*} value
- * @returns {Object}
+ * Returns the character data map retrieved from the passed parsed party object.
+ * @param {Object} partyObject
  */
-const recursiveFindKeyAndReplaceValue = (rootObject, key, value) => {
-    const keys = Object.keys(rootObject);
-    const clonedRootObject = Object.assign({}, rootObject);
-
-    keys.forEach((objectKey) => {
-        if (objectKey === key) {
-            clonedRootObject[objectKey] = value;
-            return;
-        }
-
-        const objectValue = rootObject[objectKey];
-
-        if (Array.isArray(objectValue)) {
-            clonedRootObject[objectKey] = recursiveArrayFindKeyAndReplaceValue(objectValue, key, value);
-            return;
-        }
-
-        if (typeof objectValue === "object" && objectValue !== null) {
-            clonedRootObject[objectKey] = recursiveFindKeyAndReplaceValue(objectValue, key, value);
-        }
+const getCharacterDataMap = (partyObject) => {
+    const itemIdMap = getItemIdMap(partyObject);
+    const controllableCharacterMap = _.filter(itemIdMap, (item) => {
+        return item.m_GroupId && item.m_GroupId === "<directly-controllable-unit>";
     });
 
-    return clonedRootObject;
+    const characterDataMap = {};
+    _.forEach(controllableCharacterMap, (character) => {
+        const descriptor = character.Descriptor["$id"]
+            ? character.Descriptor
+            : itemIdMap[character.Descriptor["$ref"]];
+
+        characterDataMap[character.UniqueId] = { character, descriptor };
+    });
+
+    return characterDataMap;
 };
 
 /**
- * Recursively goes through an array and finds all matches of a given key, replacing it with the passed value.
- *
- * @param {Array} rootArray
- * @param {String} key
- * @param {*} value
- * @returns {Array}
+ * Returns a global map of the party object items indexed by id;
+ * @param {Object} partyObject
  */
-const recursiveArrayFindKeyAndReplaceValue = (rootArray, key, value) => {
-    return rootArray.map((objectValue) => {
-        if (Array.isArray(objectValue)) {
-            return recursiveArrayFindKeyAndReplaceValue(objectValue, key, value);
+const getItemIdMap = (partyObject) => {
+    const itemIdMap = {};
+    recursivelyMapItemIds(itemIdMap, partyObject);
+
+    return itemIdMap;
+};
+
+/**
+ * Recursively maps the values to the passed itemIdMap.
+ *
+ * @param {Object} itemIdMap
+ * @param {*} value
+ */
+const recursivelyMapItemIds = (itemIdMap, value) => {
+    if (_.isArray(value)) {
+        _.forEach(value, recursivelyMapItemIds.bind(null, itemIdMap));
+        return;
+    }
+
+    if (_.isObject(value)) {
+        if (value["$id"]) {
+            itemIdMap[value["$id"]] = value;
         }
 
-        if (typeof objectValue === "object" && objectValue !== null) {
-            return recursiveFindKeyAndReplaceValue(objectValue, key, value);
-        }
-
-        return objectValue;
-    });
+        _.forEach(value, recursivelyMapItemIds.bind(null, itemIdMap));
+    }
 };
