@@ -183,11 +183,11 @@ const getCharacterDataMap = (partyObject) => {
             ? character.Descriptor
             : itemIdMap[character.Descriptor["$ref"]];
 
-        if (characterDataMap[descriptor.Blueprint]) {
+        if (characterDataMap[character.UniqueId]) {
             return;
         }
 
-        characterDataMap[descriptor.Blueprint] = { character, descriptor };
+        characterDataMap[character.UniqueId] = { character, descriptor };
     });
 
     return characterDataMap;
