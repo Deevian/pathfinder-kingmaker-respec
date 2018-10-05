@@ -6,82 +6,13 @@
         <title>Kingmaker Respec Tool</title>
         <meta name="description" content="Small tool to give players the ability to respec on the cRPG Pathfinder Kingmaker">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     </head>
 
     <body>
-        <div class="container">
-            <h2 class="title">
-                Pathfinder Kingmaker Respec Tool
-                <a
-                    href="https://github.com/Deevian/pathfinder-kingmaker-respec"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <img
-                        src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png"
-                        alt="GitHub Logo"
-                        class="github-logo"
-                        height="30px"
-                        width="30px"
-                    />
-                </a>
-            </h2>
-            <section class="description">
-                <p>
-                    Hi! If you're here, you've already noticed that, unfortunately, Pathfinder Kingmaker does not support character respeccing.
-                    In order to get around that, I've built a small, crude tool that allows you to modify your save files and manually force the respec
-                    of all your characters.
-                </p>
-                <p>This is very experimental, so before you do anything, and for the love of god, <b><u>BACKUP YOUR SAVES!</u></b></p>
-                <p>
-                    Also, heads up, there's a bit of an issue that I haven't been able to fix where your main character will lose his / her appearance and will show a blank portrait on first load.
-                    This should go away after save and reload, but you won't be able to see the appearance of your character during the respec. Hope you're lucky!
-                </p>
-                <p>
-                    ...also, try not to break the tool. Because it'll probably break. Heh.
-                </p>
-                <p>Anyway, on with it. Here are the instructions on how to use this (this was made for Windows, so YMMV):</p>
-                <ol>
-                    <li>
-                        <p><b>Do <u>NOT</u> close or refresh the page while using the tool</b>.</p>
-                        <p>We need to store the info from the first save in memory so that some stuff can be passed to the second one.</p>
-                    </li>
-                    <li>
-                        <p>Store all your items (including those you have equipped) somewhere. You can use the storage in the Capital, Oleg's second story chest, or even the floor, if you're a masochist.</p>
-                        <p><b>If you do not do this, you WILL lose all your items.</b></p>
-                    </li>
-                    <li>Save your game.</li>
-                    <li>
-                        <p>
-                            <label for="first-file">Select the save file you want to change.</label>
-                        </p>
-                        <p>
-                            <input id="first-file" class="file-input first-file-input" type="file" accept=".zks"/>
-                        </p>
-                        <p>If you don't know where it is, try here:</p>
-                        <pre class="file-path">%systemdrive%\users\%username%\AppData\LocalLow\Owlcat Games\Pathfinder Kingmaker\Saved Games</pre>
-                    </li>
-                    <li>
-                        <a class="file-download first-download-btn" href="#">Press here to change and download your new save file</a>. Store it in the same folder as the previous one.
-                    </li>
-                    <li>Start your game and load the save named "Temp Respec". Your character should have a white portrait.</li>
-                    <li>To keep your alignment changes, level up your main character up to level 1.</li>
-                    <li>Save your game again.</li>
-                    <li>
-                        <p><label for="second-file">Select the new save file you've created. Same place as before.</label></p>
-                        <p><input id="second-file" class="file-input second-file-input" type="file" accept=".zks"/></p>
-                    </li>
-                    <li>
-                        <a class="file-download second-download-btn" href="#">Press here to change and download your final save file</a>. Store it in the same folder as before.
-                    </li>
-                    <li>You're done! Load the save named "Respec" and respec away!</li>
-                </ol>
-            </section>
-        </div>
-
-        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
-        <script type="application/javascript"  src="dist/bundle.min.js"></script>
+        <div class="app" />
+        <script type="application/javascript" src="src/index.js"></script>
     </body>
 </html>

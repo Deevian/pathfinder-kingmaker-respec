@@ -9,22 +9,39 @@
   },
   "license": "WTFPL",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -c --watch"
+    "build": "parcel build index.html",
+    "watch": "parcel index.html",
+    "lint": "eslint --color src/**/*.js*"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn lint"
+    }
+  },
+  "alias": {
+    "components": "./src/components",
+    "utils": "./src/utils"
+  },
+  "dependencies": {
+    "emotion": "^9.2.12",
+    "file-saver": "^2.0.0-rc.3",
+    "jszip": "^3.1.5",
+    "lodash": "^4.17.11",
+    "lz-string": "^1.4.4",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-hot-loader": "^4.3.11"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "rollup": "^0.66.2",
-    "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.1.8",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-postcss": "^1.6.2",
-    "rollup-plugin-uglify-es": "0.0.1"
-  },
-  "dependencies": {
-    "file-saver": "^2.0.0-rc.3",
-    "jszip": "^3.1.5",
-    "lodash": "^4.17.11"
+    "@babel/preset-react": "^7.0.0",
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.1",
+    "husky": "^1.1.0",
+    "parcel-bundler": "^1.10.1"
   }
 }
