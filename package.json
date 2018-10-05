@@ -19,10 +19,6 @@
       "pre-push": "yarn lint"
     }
   },
-  "alias": {
-    "components": "./src/components",
-    "utils": "./src/utils"
-  },
   "dependencies": {
     "emotion": "^9.2.12",
     "file-saver": "^2.0.0-rc.3",
