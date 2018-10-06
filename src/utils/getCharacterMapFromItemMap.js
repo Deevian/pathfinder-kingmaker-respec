@@ -1,4 +1,7 @@
-import { filter, forEach } from "lodash";
+import {
+    filter,
+    forEach,
+} from "lodash";
 
 /**
  * Returns the character data map retrieved from the passed referenced item map.

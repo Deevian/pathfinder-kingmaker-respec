@@ -2,18 +2,12 @@ import React from "react";
 import { render } from "react-dom";
 
 /**
- * index
- *
  * Root file for the entire application.
  *
  * This index takes care of booting up the React app, as well as takes care of
  * making sure that the app is hot-reloadable.
  *
  * @see https://parceljs.org/hmr.html
- */
-
-/**
- * Render the hot-reloadable version of the application
  */
 function renderApp() {
     // eslint-disable-next-line global-require
@@ -24,4 +18,6 @@ function renderApp() {
 
 renderApp();
 
-module.hot.accept(renderApp);
+if (module.hot) {
+    module.hot.accept(renderApp);
+}

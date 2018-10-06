@@ -1,4 +1,8 @@
-import { forEach, isArray, isObject } from "lodash";
+import {
+    forEach,
+    isArray,
+    isObject,
+} from "lodash";
 
 /**
  * Recursively indexes values by key to the passed map.
@@ -21,7 +25,6 @@ const recursivelyIndexValuesByKey = (map, value) => {
         forEach(value, recursivelyIndexValuesByKey.bind(null, map));
     }
 };
-
 
 /**
  * Returns a global reference map of the data object items indexed by id.

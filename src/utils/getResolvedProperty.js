@@ -1,5 +1,5 @@
 /**
- * Returns resolved property.
+ * Returns resolved item map property.
  *
  * @param {Object} prop
  * @param {Object} itemMap

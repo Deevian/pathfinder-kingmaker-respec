@@ -9,7 +9,7 @@ import {
     // reduce,
 } from "lodash";
 // import getItemMapFromData from "./getItemMapFromData";
-// import FeatsToRestore from "../enums/FeatsToRestore";
+// import FeatsToRestoreEnum from "../enums/FeatsToRestoreEnum";
 
 const bumpByNumber = 1000000000;
 
@@ -64,7 +64,7 @@ const recursivelyCorrectItems = (itemMap, oldItemMap, itemsToBump, itemsToAdd, v
     // Item is not available, might be available in another part of the save structure.
     if (!oldItem) {
         // eslint-disable-next-line no-console
-        console.error(`PANIC AT THE DISCO #2, report this to me if you would: ${clonedValue.$ref}`);
+        console.error(`ERROR #2, report this to me if you would: ${clonedValue.$ref}`);
 
         delete clonedValue.$ref;
         return clonedValue;
@@ -73,7 +73,7 @@ const recursivelyCorrectItems = (itemMap, oldItemMap, itemsToBump, itemsToAdd, v
     // Item is available, but can't be uniquely identified, which is a major bummer.
     if (!oldItem.Blueprint) {
         // eslint-disable-next-line no-console
-        console.error(`PANIC AT THE DISCO #3, report this to me if you would: ${clonedValue.$ref}`);
+        console.error(`ERROR #3, report this to me if you would: ${clonedValue.$ref}`);
 
         delete clonedValue.$ref;
         return clonedValue;
@@ -89,7 +89,7 @@ const recursivelyCorrectItems = (itemMap, oldItemMap, itemsToBump, itemsToAdd, v
             clonedValue.$ref += bumpByNumber;
         } else {
             // eslint-disable-next-line no-console
-            console.error(`PANIC AT THE DISCO #4, report this to me if you would: ${clonedValue.$ref}`);
+            console.error(`ERROR #4, report this to me if you would: ${clonedValue.$ref}`);
 
             delete clonedValue.$ref;
         }
@@ -144,7 +144,7 @@ export default (characterMap, oldCharacterMap) => {
             //  */
             //
             // const featsToAdd = reduce(oldDescriptor.Progression.Features.m_Facts, (acc, featEntry) => {
-            //     if (!FeatsToRestore.includes(featEntry.Blueprint)) {
+            //     if (!FeatsToRestoreEnum.includes(featEntry.Blueprint)) {
             //         return acc;
             //     }
             //
@@ -161,7 +161,7 @@ export default (characterMap, oldCharacterMap) => {
             //     // save structure. It's a bit like finding Wally. Just less fun.
             //     if (!feat) {
             //         // eslint-disable-next-line no-console
-            //         console.error(`PANIC AT THE DISCO #1, report this to me if you would: ${JSON.stringify(featEntry)}`);
+            //         console.error(`ERROR #1, report this to me if you would: ${JSON.stringify(featEntry)}`);
             //         return acc;
             //     }
             //
@@ -198,7 +198,7 @@ export default (characterMap, oldCharacterMap) => {
             //             break;
             //         default:
             //             // eslint-disable-next-line no-console
-            //             console.error(`PANIC AT THE DISCO #5, report this to me if you would: ${item.$type}`);
+            //             console.error(`ERROR #5, report this to me if you would: ${item.$type}`);
             //     }
             // });
         });

@@ -1,6 +1,12 @@
-import { forEach, isArray, isObject } from "lodash";
+import {
+    forEach,
+    isArray,
+    isObject,
+} from "lodash";
 
 /**
+ * Recursively find broken references in the passed item map.
+ *
  * @param {Object} itemMap
  * @param {*} value
  */
@@ -26,6 +32,4 @@ const recursivelyFindBrokenReferences = (itemMap, value) => {
  * Debug tool, finds broken references in item map.
  * @param {Object} itemMap
  */
-export default (itemMap) => {
-    recursivelyFindBrokenReferences(itemMap, itemMap);
-};
+export default (itemMap) => recursivelyFindBrokenReferences(itemMap, itemMap);
