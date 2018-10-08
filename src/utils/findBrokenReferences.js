@@ -20,7 +20,7 @@ const recursivelyFindBrokenReferences = (itemMap, value) => {
         return;
     }
 
-    if (value.$ref && (!itemMap[value.$ref] || !itemMap[value.$ref].$id)) {
+    if (value.$ref && (!itemMap[value.$ref] || !itemMap[value.$ref])) {
         // eslint-disable-next-line no-console
         console.error("Broken reference found", value.$ref);
     }

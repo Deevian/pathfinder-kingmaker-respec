@@ -7,5 +7,5 @@ import CharacterBlueprintEnum from "../enums/CharacterBlueprintEnum";
  * @returns {string}
  */
 export default (descriptor) => {
-    return CharacterBlueprintEnum[descriptor.Blueprint] || descriptor.CustomName || "Unknown";
+    return CharacterBlueprintEnum[descriptor.Blueprint] || descriptor.CustomName;
 };

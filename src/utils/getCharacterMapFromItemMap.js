@@ -19,11 +19,11 @@ export default (itemMap) => {
             ? character.Descriptor
             : itemMap[character.Descriptor.$ref];
 
-        if (!characterDataMap[descriptor.Blueprint]) {
-            characterDataMap[descriptor.Blueprint] = [];
+        if (!characterDataMap[character.UniqueId]) {
+            characterDataMap[character.UniqueId] = [];
         }
 
-        characterDataMap[descriptor.Blueprint].push(descriptor);
+        characterDataMap[character.UniqueId].push(descriptor);
     });
 
     return characterDataMap;

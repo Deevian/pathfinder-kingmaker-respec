@@ -27,12 +27,12 @@ const recursivelyIndexValuesByKey = (map, value) => {
 };
 
 /**
- * Returns a global reference map of the data object items indexed by id.
+ * Returns a global item map of the data object items indexed by id.
  * @param {Object} data
  */
 export default (data) => {
     const itemMap = {};
-    recursivelyIndexValuesByKey(itemMap, data);
 
+    recursivelyIndexValuesByKey(itemMap, data);
     return itemMap;
 };

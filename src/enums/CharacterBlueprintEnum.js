@@ -11,7 +11,6 @@ export default Object.freeze({
     "f9161aa0b3f519c47acbce01f53ee217": "Octavia",
     "f6c23e93512e1b54dba11560446a9e02": "Tristian",
     "d5bc1d94cd3e5be4bbc03f3366f67afc": "Ekundayo",
-    "ef4e6551044872b4cb99dff10f707971": "Dog",
     "3f5777b51d301524c9b912812955ee1e": "Jubilost",
     "f9417988783876044b76f918f8636455": "Nok-Nok",
 });

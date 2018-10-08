@@ -12,12 +12,12 @@ import CharacterBlueprintEnum from "../enums/CharacterBlueprintEnum";
 export default (characterMap, itemMap) => {
     const trimmedMap = {};
 
-    forEach(characterMap, (characterArray, blueprint) => {
-        if (!CharacterBlueprintEnum[blueprint] && !characterArray[0].IsEssentialForGame) {
+    forEach(characterMap, (characterArray, uniqueId) => {
+        if (!CharacterBlueprintEnum[uniqueId] && !characterArray[0].IsEssentialForGame) {
             return;
         }
 
-        trimmedMap[blueprint] = characterArray.map((character) => ({
+        trimmedMap[uniqueId] = characterArray.map((character) => ({
             $id: character.$id,
             CustomName: character.CustomName,
             Blueprint: character.Blueprint,

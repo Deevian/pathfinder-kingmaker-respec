@@ -5,7 +5,8 @@ import {
     forEach,
     isEmpty,
     map,
-    omitBy,
+    reduce,
+    filter,
 } from "lodash";
 
 import loadJSONFilesFromSave from "../../utils/loadJSONFilesFromSave";
@@ -121,9 +122,42 @@ class App extends Component {
 
         return this.state.loadFirstFilePromise.promise
             .then(([reader, headerData, partyData]) => {
-                const characterMap = omitBy(this.state.characterMap, (characterArray, blueprint) => {
-                    return !this.characterCheckboxes[blueprint].checked;
-                });
+                const characterMap = reduce(this.state.characterMap, (acc, characterArray, uniqueId) => {
+                    const isSelected = this.characterCheckboxes[uniqueId] && this.characterCheckboxes[uniqueId].checked;
+
+                    const masterId = characterArray[0].Master.m_UniqueId;
+                    const isPet = masterId !== null;
+
+                    if (!isSelected && !isPet) {
+                        return acc;
+                    }
+
+                    if (isPet) {
+                        const isMasterSelected = this.characterCheckboxes[masterId]
+                            && this.characterCheckboxes[masterId].checked;
+
+                        if (isMasterSelected) {
+                            forEach(characterArray, (descriptor) => {
+                                const character = this.state.itemMap[descriptor.Unit.$ref];
+
+                                // eslint-disable-next-line no-param-reassign
+                                forEach(character, (value, key) => delete descriptor[key]);
+                                forEach(character, (value, key) => delete character[key]);
+                            });
+                        }
+
+                        return acc;
+                    }
+
+                    forEach(characterArray, (descriptor) => {
+                        // eslint-disable-next-line no-param-reassign
+                        descriptor.Recreate = true;
+                        // eslint-disable-next-line no-param-reassign
+                        descriptor.m_Pet.m_UniqueId = null;
+                    });
+
+                    return Object.assign({}, acc, { [uniqueId]: characterArray });
+                }, {});
 
                 if (isEmpty(characterMap)) {
                     // eslint-disable-next-line no-alert
@@ -131,13 +165,8 @@ class App extends Component {
                     return null;
                 }
 
-
-                forEach(characterMap, (characterArray) => {
-                    forEach(characterArray, (descriptor) => {
-                        // eslint-disable-next-line no-param-reassign
-                        descriptor.Recreate = true;
-                    });
-                });
+                // eslint-disable-next-line no-param-reassign
+                partyData.m_EntityData = filter(partyData.m_EntityData, (data) => !isEmpty(data));
 
                 // eslint-disable-next-line react/no-access-state-in-setstate
                 const trimmedCharacterMap = trimCharacterMap(characterMap, this.state.itemMap);
@@ -280,16 +309,24 @@ class App extends Component {
                                 <div>
                                     Choose the characters you want to respec:
                                     <ul className={characterListCSSClass}>
-                                        {map(this.state.characterMap, (characterArray, blueprint) => (
-                                            <li key={blueprint}>
-                                                <label>
-                                                    <input
-                                                        type="checkbox"
-                                                        ref={(el) => this.characterCheckboxes[blueprint] = el}
-                                                    /> {getCharacterName(characterArray[0])}
-                                                </label>
-                                            </li>
-                                        ))}
+                                        {map(this.state.characterMap, (characterArray, uniqueId) => {
+                                            const characterName = getCharacterName(characterArray[0]);
+
+                                            if (!characterName) {
+                                                return null;
+                                            }
+
+                                            return (
+                                                <li key={uniqueId}>
+                                                    <label>
+                                                        <input
+                                                            type="checkbox"
+                                                            ref={(el) => this.characterCheckboxes[uniqueId] = el}
+                                                        /> {characterName}
+                                                    </label>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
                             ) : <i>Waiting for save file to load current party...</i>}
